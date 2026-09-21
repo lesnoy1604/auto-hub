@@ -15,6 +15,15 @@ func NewPaymentHandler(svc *service.PaymentService) *PaymentHandler {
 	return &PaymentHandler{svc: svc}
 }
 
+// List godoc
+// @Summary      Список платежей
+// @Description  Без фильтра возвращает UNPAID + OVERDUE
+// @Tags         payments
+// @Produce      json
+// @Param        status  query     string  false  "PAID, UNPAID, OVERDUE, PENDING (=UNPAID+OVERDUE)"
+// @Success      200     {object}  dto.PaymentsListResponse
+// @Security     BearerAuth
+// @Router       /payments [get]
 func (h *PaymentHandler) List(w http.ResponseWriter, r *http.Request) {
 	status := queryParam(r, "status")
 	resp, err := h.svc.List(r.Context(), status)
@@ -25,6 +34,19 @@ func (h *PaymentHandler) List(w http.ResponseWriter, r *http.Request) {
 	JSON(w, http.StatusOK, resp)
 }
 
+// Pay godoc
+// @Summary      Оплатить платёж
+// @Description  Отмечает платёж как PAID и пересчитывает paid_amount договора
+// @Tags         payments
+// @Accept       json
+// @Produce      json
+// @Param        body  body      dto.PayPaymentRequest  true  "ID платежа и дата оплаты"
+// @Success      200   {object}  dto.PayPaymentResponse
+// @Failure      400   {object}  map[string]string
+// @Failure      404   {object}  map[string]string
+// @Failure      409   {object}  map[string]string  "Платёж уже оплачен"
+// @Security     BearerAuth
+// @Router       /payments [post]
 func (h *PaymentHandler) Pay(w http.ResponseWriter, r *http.Request) {
 	var req dto.PayPaymentRequest
 	if err := DecodeAndValidate(r, &req); err != nil {

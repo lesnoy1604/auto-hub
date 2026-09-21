@@ -1,8 +1,19 @@
+// @title           Auto Hub API
+// @version         1.0
+// @description     REST API для управления арендой автомобилей (CRM).
+
+// @host      localhost:8080
+// @BasePath  /api
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Введите токен в формате: Bearer {token}
+
 package main
 
 import (
 	"context"
-
 	"fmt"
 	"net/http"
 	"os"
@@ -10,6 +21,7 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/dutik/auto-hub/docs"
 	"github.com/dutik/auto-hub/internal/config"
 	"github.com/dutik/auto-hub/internal/handler"
 	"github.com/dutik/auto-hub/internal/repository/postgres"

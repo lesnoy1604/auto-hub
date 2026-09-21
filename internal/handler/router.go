@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/cors"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
 func NewRouter(
@@ -42,6 +43,11 @@ func NewRouter(
 	paymentH := NewPaymentHandler(paymentSvc)
 	fineH := NewFineHandler(fineSvc)
 	dashboardH := NewDashboardHandler(dashboardSvc)
+
+	// Swagger UI
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("/swagger/doc.json"),
+	))
 
 	// Публичные маршруты
 	r.Post("/api/auth/login", authH.Login)

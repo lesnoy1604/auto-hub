@@ -17,6 +17,17 @@ func NewAuthHandler(svc *service.AuthService) *AuthHandler {
 	return &AuthHandler{svc: svc}
 }
 
+// Login godoc
+// @Summary      Войти в систему
+// @Description  Возвращает JWT токен по email и паролю
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body      dto.LoginRequest   true  "Credentials"
+// @Success      200   {object}  dto.LoginResponse
+// @Failure      400   {object}  map[string]string
+// @Failure      401   {object}  map[string]string
+// @Router       /auth/login [post]
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var req dto.LoginRequest
 	if err := DecodeAndValidate(r, &req); err != nil {

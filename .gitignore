@@ -13,3 +13,6 @@ bin/
 
 # Go
 vendor/
+
+# Generated
+docs/

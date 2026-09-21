@@ -17,6 +17,16 @@ func NewCarHandler(svc *service.CarService) *CarHandler {
 	return &CarHandler{svc: svc}
 }
 
+// List godoc
+// @Summary      Список машин
+// @Tags         cars
+// @Produce      json
+// @Param        status  query     string  false  "Фильтр по статусу (FREE, RENTED, REPAIR, SOLD)"
+// @Param        search  query     string  false  "Поиск по номеру (ILIKE)"
+// @Success      200     {object}  dto.CarsListResponse
+// @Failure      401     {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /cars [get]
 func (h *CarHandler) List(w http.ResponseWriter, r *http.Request) {
 	status := queryParam(r, "status")
 	search := queryParam(r, "search")
@@ -29,6 +39,15 @@ func (h *CarHandler) List(w http.ResponseWriter, r *http.Request) {
 	JSON(w, http.StatusOK, resp)
 }
 
+// GetByID godoc
+// @Summary      Детали машины
+// @Tags         cars
+// @Produce      json
+// @Param        id   path      int  true  "ID машины"
+// @Success      200  {object}  dto.CarDetailResponse
+// @Failure      404  {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /cars/{id} [get]
 func (h *CarHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
@@ -44,6 +63,16 @@ func (h *CarHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	JSON(w, http.StatusOK, resp)
 }
 
+// Create godoc
+// @Summary      Создать машину
+// @Tags         cars
+// @Accept       json
+// @Produce      json
+// @Param        body  body      dto.CreateCarRequest  true  "Данные машины"
+// @Success      201   {object}  domain.Car
+// @Failure      400   {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /cars [post]
 func (h *CarHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var req dto.CreateCarRequest
 	if err := DecodeAndValidate(r, &req); err != nil {
@@ -59,6 +88,18 @@ func (h *CarHandler) Create(w http.ResponseWriter, r *http.Request) {
 	JSON(w, http.StatusCreated, car)
 }
 
+// Update godoc
+// @Summary      Обновить машину
+// @Tags         cars
+// @Accept       json
+// @Produce      json
+// @Param        id    path      int                   true  "ID машины"
+// @Param        body  body      dto.UpdateCarRequest  true  "Данные машины"
+// @Success      200   {object}  domain.Car
+// @Failure      400   {object}  map[string]string
+// @Failure      404   {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /cars/{id} [put]
 func (h *CarHandler) Update(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {

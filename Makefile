@@ -1,9 +1,15 @@
 BINARY=bin/api
 MAIN=./cmd/api
 
-.PHONY: run build test migrate-up migrate-down tidy vet
+.PHONY: run stop build test migrate-up migrate-down tidy vet swagger
 
-run:
+stop:
+	-lsof -ti :8080 | xargs kill 2>/dev/null; true
+
+swagger:
+	$(shell go env GOPATH)/bin/swag init -g cmd/api/main.go --output docs
+
+run: stop
 	go run $(MAIN)/main.go
 
 build:

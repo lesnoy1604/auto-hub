@@ -16,6 +16,14 @@ func NewHealthHandler(pool *pgxpool.Pool) *HealthHandler {
 	return &HealthHandler{pool: pool}
 }
 
+// Check godoc
+// @Summary      Health check
+// @Description  Проверяет доступность сервера и базы данных
+// @Tags         system
+// @Produce      json
+// @Success      200  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]string
+// @Router       /health [get]
 func (h *HealthHandler) Check(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
 	defer cancel()
