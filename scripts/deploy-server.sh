@@ -61,6 +61,17 @@ fi
 # ── 3. Сборка ─────────────────────────────────────────────────────────────────
 echo "→ [3/5] Сборка бинарника..."
 cd "$REPO_DIR"
+
+# Установить swag если нет
+if ! command -v swag &> /dev/null && [ ! -f "$(go env GOPATH)/bin/swag" ]; then
+  echo "   Устанавливаем swag..."
+  go install github.com/swaggo/swag/cmd/swag@latest
+fi
+SWAG="$(go env GOPATH)/bin/swag"
+
+# Генерация swagger docs
+"$SWAG" init -g cmd/api/main.go --output docs -q
+
 mkdir -p bin
 go build -ldflags="-s -w" -o bin/api  ./cmd/api/main.go
 go build -ldflags="-s -w" -o bin/seed ./cmd/seed/main.go
