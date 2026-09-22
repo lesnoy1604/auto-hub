@@ -142,3 +142,17 @@ func (s *DriverService) Update(ctx context.Context, id int, req *dto.UpdateDrive
 	}
 	return s.driverRepo.Update(ctx, id, d)
 }
+
+func (s *DriverService) Delete(ctx context.Context, id int) error {
+	activeStatus := domain.ContractStatusActive
+	contracts, err := s.contractRepo.List(ctx, &activeStatus)
+	if err != nil {
+		return err
+	}
+	for _, c := range contracts {
+		if c.DriverID == id {
+			return domain.ErrDriverHasActiveContract
+		}
+	}
+	return s.driverRepo.Delete(ctx, id)
+}

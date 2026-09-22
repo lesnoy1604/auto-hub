@@ -131,3 +131,14 @@ func (r *contractRepo) CountActive(ctx context.Context) (int, error) {
 	err := r.db.QueryRow(ctx, `SELECT COUNT(*) FROM contracts WHERE status = 'ACTIVE'`).Scan(&count)
 	return count, err
 }
+
+func (r *contractRepo) Delete(ctx context.Context, id int) error {
+	tag, err := r.db.Exec(ctx, `DELETE FROM contracts WHERE id = $1`, id)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return domain.ErrNotFound
+	}
+	return nil
+}

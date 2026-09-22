@@ -78,3 +78,14 @@ func (r *driverRepo) Update(ctx context.Context, id int, d *domain.Driver) (*dom
 	)
 	return scanDriver(row)
 }
+
+func (r *driverRepo) Delete(ctx context.Context, id int) error {
+	tag, err := r.db.Exec(ctx, `DELETE FROM drivers WHERE id = $1`, id)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return domain.ErrNotFound
+	}
+	return nil
+}

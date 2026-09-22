@@ -2,9 +2,11 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/dutik/auto-hub/internal/dto"
 	"github.com/dutik/auto-hub/internal/service"
+	"github.com/go-chi/chi/v5"
 )
 
 type PaymentHandler struct {
@@ -47,6 +49,31 @@ func (h *PaymentHandler) List(w http.ResponseWriter, r *http.Request) {
 // @Failure      409   {object}  map[string]string  "Платёж уже оплачен"
 // @Security     BearerAuth
 // @Router       /payments [post]
+// Delete godoc
+// @Summary      Удалить платёж
+// @Description  Нельзя удалить оплаченный платёж
+// @Tags         payments
+// @Produce      json
+// @Param        id   path      int  true  "ID платежа"
+// @Success      204  "No Content"
+// @Failure      404  {object}  map[string]string
+// @Failure      409  {object}  map[string]string  "Платёж уже оплачен"
+// @Security     BearerAuth
+// @Router       /payments/{id} [delete]
+func (h *PaymentHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		Error(w, http.StatusBadRequest, "invalid id")
+		return
+	}
+
+	if err := h.svc.Delete(r.Context(), id); err != nil {
+		HandleError(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func (h *PaymentHandler) Pay(w http.ResponseWriter, r *http.Request) {
 	var req dto.PayPaymentRequest
 	if err := DecodeAndValidate(r, &req); err != nil {

@@ -121,6 +121,30 @@ func (h *ContractHandler) Update(w http.ResponseWriter, r *http.Request) {
 	JSON(w, http.StatusOK, resp)
 }
 
+// Delete godoc
+// @Summary      Удалить договор
+// @Tags         contracts
+// @Produce      json
+// @Param        id   path      int  true  "ID договора"
+// @Success      204  "No Content"
+// @Failure      404  {object}  map[string]string
+// @Failure      409  {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /contracts/{id} [delete]
+func (h *ContractHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		Error(w, http.StatusBadRequest, "invalid id")
+		return
+	}
+
+	if err := h.svc.Delete(r.Context(), id); err != nil {
+		HandleError(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
 // GetPayments godoc
 // @Summary      Платежи по договору
 // @Tags         contracts

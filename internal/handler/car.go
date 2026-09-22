@@ -121,6 +121,30 @@ func (h *CarHandler) Update(w http.ResponseWriter, r *http.Request) {
 	JSON(w, http.StatusOK, car)
 }
 
+// Delete godoc
+// @Summary      Удалить машину
+// @Tags         cars
+// @Produce      json
+// @Param        id   path      int  true  "ID машины"
+// @Success      204  "No Content"
+// @Failure      404  {object}  map[string]string
+// @Failure      409  {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /cars/{id} [delete]
+func (h *CarHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		Error(w, http.StatusBadRequest, "invalid id")
+		return
+	}
+
+	if err := h.svc.Delete(r.Context(), id); err != nil {
+		HandleError(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func queryParam(r *http.Request, key string) *string {
 	v := r.URL.Query().Get(key)
 	if v == "" {

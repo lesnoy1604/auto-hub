@@ -142,3 +142,11 @@ func (s *CarService) Update(ctx context.Context, id int, req *dto.UpdateCarReque
 	}
 	return s.carRepo.Update(ctx, id, car)
 }
+
+func (s *CarService) Delete(ctx context.Context, id int) error {
+	active, err := s.contractRepo.GetActiveByCarID(ctx, id)
+	if err == nil && active != nil {
+		return domain.ErrCarHasActiveContract
+	}
+	return s.carRepo.Delete(ctx, id)
+}

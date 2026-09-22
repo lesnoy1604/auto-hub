@@ -116,3 +116,26 @@ func (h *FineHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	JSON(w, http.StatusOK, fine)
 }
+
+// Delete godoc
+// @Summary      Удалить штраф
+// @Tags         fines
+// @Produce      json
+// @Param        id   path      int  true  "ID штрафа"
+// @Success      204  "No Content"
+// @Failure      404  {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /fines/{id} [delete]
+func (h *FineHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		Error(w, http.StatusBadRequest, "invalid id")
+		return
+	}
+
+	if err := h.svc.Delete(r.Context(), id); err != nil {
+		HandleError(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}

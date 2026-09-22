@@ -88,6 +88,17 @@ func (s *PaymentService) List(ctx context.Context, status *string) (*dto.Payment
 	return &dto.PaymentsListResponse{Payments: items, Total: len(items)}, nil
 }
 
+func (s *PaymentService) Delete(ctx context.Context, id int) error {
+	payment, err := s.paymentRepo.GetByID(ctx, id)
+	if err != nil {
+		return err
+	}
+	if payment.Status == domain.PaymentStatusPaid {
+		return domain.ErrAlreadyPaid
+	}
+	return s.paymentRepo.Delete(ctx, id)
+}
+
 func (s *PaymentService) Pay(ctx context.Context, req *dto.PayPaymentRequest) (*dto.PayPaymentResponse, error) {
 	payment, err := s.paymentRepo.GetByID(ctx, req.PaymentID)
 	if err != nil {

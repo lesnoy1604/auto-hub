@@ -92,6 +92,14 @@ func (s *FineService) Create(ctx context.Context, req *dto.CreateFineRequest) (*
 	return s.fineRepo.Create(ctx, fine)
 }
 
+func (s *FineService) Delete(ctx context.Context, id int) error {
+	_, err := s.fineRepo.GetByID(ctx, id)
+	if err != nil {
+		return err
+	}
+	return s.fineRepo.Delete(ctx, id)
+}
+
 func (s *FineService) Update(ctx context.Context, id int, req *dto.UpdateFineRequest) (*domain.Fine, error) {
 	fine, err := s.fineRepo.GetByID(ctx, id)
 	if err != nil {

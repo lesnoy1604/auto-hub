@@ -214,6 +214,17 @@ func (s *ContractService) GetPayments(ctx context.Context, id int) ([]domain.Pay
 	return s.paymentRepo.ListByContractID(ctx, id)
 }
 
+func (s *ContractService) Delete(ctx context.Context, id int) error {
+	contract, err := s.contractRepo.GetByID(ctx, id)
+	if err != nil {
+		return err
+	}
+	if contract.Status == domain.ContractStatusActive {
+		return domain.ErrConflict
+	}
+	return s.contractRepo.Delete(ctx, id)
+}
+
 func generatePaymentSchedule(c *domain.Contract) []domain.Payment {
 	monthCount := int(math.Ceil(c.TotalAmount.Div(c.MonthlyPayment).InexactFloat64()))
 	payments := make([]domain.Payment, 0, monthCount)

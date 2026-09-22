@@ -61,24 +61,29 @@ func NewRouter(
 		r.Post("/api/cars", carH.Create)
 		r.Get("/api/cars/{id}", carH.GetByID)
 		r.Put("/api/cars/{id}", carH.Update)
+		r.Delete("/api/cars/{id}", carH.Delete)
 
 		r.Get("/api/drivers", driverH.List)
 		r.Post("/api/drivers", driverH.Create)
 		r.Get("/api/drivers/{id}", driverH.GetByID)
 		r.Put("/api/drivers/{id}", driverH.Update)
+		r.Delete("/api/drivers/{id}", driverH.Delete)
 
 		r.Get("/api/contracts", contractH.List)
 		r.Post("/api/contracts", contractH.Create)
 		r.Get("/api/contracts/{id}", contractH.GetByID)
 		r.Put("/api/contracts/{id}", contractH.Update)
+		r.Delete("/api/contracts/{id}", contractH.Delete)
 		r.Get("/api/contracts/{id}/payments", contractH.GetPayments)
 
 		r.Get("/api/payments", paymentH.List)
 		r.Post("/api/payments", paymentH.Pay)
+		r.Delete("/api/payments/{id}", paymentH.Delete)
 
 		r.Get("/api/fines", fineH.List)
 		r.Post("/api/fines", fineH.Create)
 		r.Put("/api/fines/{id}", fineH.Update)
+		r.Delete("/api/fines/{id}", fineH.Delete)
 
 		r.Get("/api/dashboard", dashboardH.Get)
 	})

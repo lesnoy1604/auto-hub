@@ -120,3 +120,27 @@ func (h *DriverHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	JSON(w, http.StatusOK, driver)
 }
+
+// Delete godoc
+// @Summary      Удалить водителя
+// @Tags         drivers
+// @Produce      json
+// @Param        id   path      int  true  "ID водителя"
+// @Success      204  "No Content"
+// @Failure      404  {object}  map[string]string
+// @Failure      409  {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /drivers/{id} [delete]
+func (h *DriverHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		Error(w, http.StatusBadRequest, "invalid id")
+		return
+	}
+
+	if err := h.svc.Delete(r.Context(), id); err != nil {
+		HandleError(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}

@@ -122,3 +122,14 @@ func (r *fineRepo) AggregateUnpaid(ctx context.Context) (int, decimal.Decimal, e
 	).Scan(&count, &sum)
 	return count, sum, err
 }
+
+func (r *fineRepo) Delete(ctx context.Context, id int) error {
+	tag, err := r.db.Exec(ctx, `DELETE FROM fines WHERE id = $1`, id)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return domain.ErrNotFound
+	}
+	return nil
+}

@@ -18,6 +18,7 @@ type CarRepository interface {
 	GetByID(ctx context.Context, id int) (*domain.Car, error)
 	Create(ctx context.Context, car *domain.Car) (*domain.Car, error)
 	Update(ctx context.Context, id int, car *domain.Car) (*domain.Car, error)
+	Delete(ctx context.Context, id int) error
 	UpdateStatus(ctx context.Context, id int, status domain.CarStatus) error
 	UpdateStatusTx(ctx context.Context, tx pgx.Tx, id int, status domain.CarStatus) error
 	CountByStatus(ctx context.Context) (map[domain.CarStatus]int, error)
@@ -28,6 +29,7 @@ type DriverRepository interface {
 	GetByID(ctx context.Context, id int) (*domain.Driver, error)
 	Create(ctx context.Context, d *domain.Driver) (*domain.Driver, error)
 	Update(ctx context.Context, id int, d *domain.Driver) (*domain.Driver, error)
+	Delete(ctx context.Context, id int) error
 }
 
 type ContractRepository interface {
@@ -40,6 +42,7 @@ type ContractRepository interface {
 	UpdateTx(ctx context.Context, tx pgx.Tx, id int, c *domain.Contract) (*domain.Contract, error)
 	UpdatePaidAmount(ctx context.Context, id int, paidAmount decimal.Decimal) error
 	UpdatePaidAmountTx(ctx context.Context, tx pgx.Tx, id int, paidAmount decimal.Decimal) error
+	Delete(ctx context.Context, id int) error
 	CountActive(ctx context.Context) (int, error)
 }
 
@@ -50,6 +53,7 @@ type PaymentRepository interface {
 	BulkCreateTx(ctx context.Context, tx pgx.Tx, payments []domain.Payment) error
 	MarkAsPaidTx(ctx context.Context, tx pgx.Tx, id int, paidAt interface{}) (*domain.Payment, error)
 	SumPaidByContractIDTx(ctx context.Context, tx pgx.Tx, contractID int) (decimal.Decimal, error)
+	Delete(ctx context.Context, id int) error
 	AggregateOverdue(ctx context.Context) (count int, sum decimal.Decimal, err error)
 	CollectedThisMonth(ctx context.Context) (decimal.Decimal, error)
 }
@@ -59,6 +63,7 @@ type FineRepository interface {
 	GetByID(ctx context.Context, id int) (*domain.Fine, error)
 	Create(ctx context.Context, fine *domain.Fine) (*domain.Fine, error)
 	Update(ctx context.Context, id int, fine *domain.Fine) (*domain.Fine, error)
+	Delete(ctx context.Context, id int) error
 	ListByCar(ctx context.Context, carID int, limit int) ([]domain.Fine, error)
 	AggregateUnpaid(ctx context.Context) (count int, sum decimal.Decimal, err error)
 }

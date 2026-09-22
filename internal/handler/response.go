@@ -24,6 +24,10 @@ func HandleError(w http.ResponseWriter, err error) {
 		Error(w, http.StatusNotFound, "Resource not found")
 	case errors.Is(err, domain.ErrCarNotFree):
 		Error(w, http.StatusConflict, err.Error())
+	case errors.Is(err, domain.ErrCarHasActiveContract):
+		Error(w, http.StatusConflict, err.Error())
+	case errors.Is(err, domain.ErrDriverHasActiveContract):
+		Error(w, http.StatusConflict, err.Error())
 	case errors.Is(err, domain.ErrConflict):
 		Error(w, http.StatusConflict, err.Error())
 	case errors.Is(err, domain.ErrAlreadyPaid):
