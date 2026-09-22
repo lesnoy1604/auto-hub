@@ -81,15 +81,16 @@ go run ./cmd/seed/main.go
 | `POST` | `/api/auth/login` | Получить JWT токен |
 | `GET` | `/api/health` | Проверка состояния сервера |
 | `GET/POST` | `/api/cars` | Список машин / создать |
-| `GET/PUT` | `/api/cars/{id}` | Детали / обновить |
+| `GET/PUT/DELETE` | `/api/cars/{id}` | Детали / обновить / удалить |
 | `GET/POST` | `/api/drivers` | Список водителей / создать |
-| `GET/PUT` | `/api/drivers/{id}` | Детали / обновить |
+| `GET/PUT/DELETE` | `/api/drivers/{id}` | Детали / обновить / удалить |
 | `GET/POST` | `/api/contracts` | Список договоров / создать |
-| `GET/PUT` | `/api/contracts/{id}` | Детали / обновить |
+| `GET/PUT/DELETE` | `/api/contracts/{id}` | Детали / обновить / удалить |
 | `GET` | `/api/contracts/{id}/payments` | Платежи по договору |
 | `GET/POST` | `/api/payments` | Список платежей / оплатить |
+| `DELETE` | `/api/payments/{id}` | Удалить платёж |
 | `GET/POST` | `/api/fines` | Список штрафов / создать |
-| `PUT` | `/api/fines/{id}` | Обновить штраф |
+| `PUT/DELETE` | `/api/fines/{id}` | Обновить / удалить штраф |
 | `GET` | `/api/dashboard` | Сводная статистика |
 
 ### Пример
@@ -106,6 +107,27 @@ curl -X POST http://localhost:8080/api/cars \
   -H 'Content-Type: application/json' \
   -d '{"plate_number":"А001АА77","vin":"XTA123","brand":"Toyota","model":"Camry","year":2022,"status":"FREE","mileage":0}'
 ```
+
+## Деплой на сервер
+
+**Первый запуск** — клонировать репозиторий и настроить окружение:
+
+```bash
+git clone <repo-url> /opt/autohub-src
+cp /opt/autohub-src/.env.example /opt/autohub/.env
+# отредактировать /opt/autohub/.env
+```
+
+**Обновление** — после `git pull` запускать скрипт деплоя:
+
+```bash
+cd /opt/autohub-src
+git pull
+sudo systemctl stop autohub
+bash ./scripts/deploy-server.sh
+```
+
+Скрипт собирает бинарник, копирует его вместе с миграциями в `/opt/autohub/` и перезапускает сервис. Миграции применяются автоматически при старте.
 
 ## Переменные окружения
 
